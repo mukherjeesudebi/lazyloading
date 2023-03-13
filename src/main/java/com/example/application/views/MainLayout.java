@@ -4,6 +4,7 @@ package com.example.application.views;
 import com.example.application.components.appnav.AppNav;
 import com.example.application.components.appnav.AppNavItem;
 import com.example.application.views.about.AboutView;
+import com.example.application.views.grid.GridView;
 import com.example.application.views.helloworld.HelloWorldView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -56,6 +57,7 @@ public class MainLayout extends AppLayout {
 
         nav.addItem(new AppNavItem("Hello World", HelloWorldView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
         nav.addItem(new AppNavItem("About", AboutView.class, LineAwesomeIcon.FILE.create()));
+        nav.addItem(new AppNavItem("Grid View", GridView.class, LineAwesomeIcon.TABLE_SOLID.create()));
 
         return nav;
     }
