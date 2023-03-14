@@ -3,11 +3,13 @@ package com.example.application.entities;
 import javax.persistence.Entity;
 
 @Entity
-public class Person extends AbstractEntity{
+public class Person extends AbstractEntity {
 	private String firstName;
-	private String LastName;
+	private String lastName;
 	private String email;
 	private String profession;
+	private Occupation occupation;
+	private Food favoriteFood;
 
 	public String getFirstName() {
 		return firstName;
@@ -18,11 +20,11 @@ public class Person extends AbstractEntity{
 	}
 
 	public String getLastName() {
-		return LastName;
+		return lastName;
 	}
 
 	public void setLastName(String lastName) {
-		LastName = lastName;
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -40,4 +42,21 @@ public class Person extends AbstractEntity{
 	public void setProfession(String profession) {
 		this.profession = profession;
 	}
+
+	public Occupation getOccupation() {
+		return occupation;
+	}
+
+	public void setOccupation(Occupation occupation) {
+		this.occupation = occupation;
+	}
+
+	public Food getFavoriteFood() {
+		return favoriteFood;
+	}
+
+	public void setFavoriteFood(Food favoriteFood) {
+		this.favoriteFood = favoriteFood;
+	}
+
 }
