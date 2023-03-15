@@ -69,13 +69,13 @@ public class DBTools {
 			createPerson(firstName, lastName, email);
 		}
 
-		for (int i = 1; i <= 100; i++) {
+		for (int i = 1; i <= 200; i++) {
 			String occupationName = "Occupation" + i;
 			log.info("======== creating Occupation ======== ");
 			createOccupation(occupationName);
 		}
 		
-		for (int i = 1; i <= 100; i++) {
+		for (int i = 1; i <= 200; i++) {
 			String foodName = "Food" + i;
 			log.info("======== creating food ======== ");
 			createFood(foodName);
