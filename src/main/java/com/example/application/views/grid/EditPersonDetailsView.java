@@ -1,6 +1,5 @@
 package com.example.application.views.grid;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.PageRequest;
@@ -11,14 +10,15 @@ import com.example.application.entities.Person;
 import com.example.application.repositories.FoodRepository;
 import com.example.application.repositories.OccupationRepository;
 import com.example.application.repositories.PersonRepository;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.provider.BackEndDataProvider;
-import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.BeforeEvent;
@@ -58,7 +58,19 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 		formLayout.add(firstName, lastName, email, occupation, favoriteFood);
 		formLayout.setResponsiveSteps(new ResponsiveStep("0", 2));
 		formLayout.setColspan(email, 2);
-		add(formLayout);
+
+		Button saveChangesButton = new Button("Save Changes");
+		add(formLayout, saveChangesButton);
+
+		saveChangesButton.addClickListener(event -> {
+			try {
+				binder.writeBean(selectedPerson);
+				personRepository.save(selectedPerson);
+			} catch (ValidationException e) {
+				e.printStackTrace();
+			}
+			
+		});
 
 	}
 
@@ -90,14 +102,10 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 
 	public void populateComboBoxData() {
 		occupation.setItems(query -> {
-			return occupationRepository.findAll(
-					PageRequest.of(query.getPage(), query.getPageSize())
-					).stream();
+			return occupationRepository.findAll(PageRequest.of(query.getPage(), query.getPageSize())).stream();
 		});
 		favoriteFood.setItems(query -> {
-			return foodRepository.findAll(
-					PageRequest.of(query.getPage(), query.getPageSize())
-					).stream();
+			return foodRepository.findAll(PageRequest.of(query.getPage(), query.getPageSize())).stream();
 		});
 	}
 
