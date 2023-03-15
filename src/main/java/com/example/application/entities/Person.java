@@ -7,7 +7,6 @@ public class Person extends AbstractEntity {
 	private String firstName;
 	private String lastName;
 	private String email;
-	private String profession;
 	private Occupation occupation;
 	private Food favoriteFood;
 
@@ -33,14 +32,6 @@ public class Person extends AbstractEntity {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getProfession() {
-		return profession;
-	}
-
-	public void setProfession(String profession) {
-		this.profession = profession;
 	}
 
 	public Occupation getOccupation() {

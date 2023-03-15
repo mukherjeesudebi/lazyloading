@@ -24,8 +24,9 @@ public class GridView extends HorizontalLayout {
 		personsGrid.addColumn(Person::getFirstName).setHeader("First name");
 		personsGrid.addColumn(Person::getLastName).setHeader("Last name");
 		personsGrid.addColumn(Person::getEmail).setHeader("Email");
-		personsGrid.addColumn(Person::getProfession).setHeader("Profession");
-
+		personsGrid.addColumn(Person::getOccupation).setHeader("Occupation");
+		personsGrid.addColumn(Person::getFavoriteFood).setHeader("Favorite food");
+		
 		personsGrid.setItems(personsList);
 		
 		add(personsGrid);
