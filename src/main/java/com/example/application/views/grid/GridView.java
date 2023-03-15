@@ -1,10 +1,12 @@
 package com.example.application.views.grid;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.example.application.entities.Person;
 import com.example.application.repositories.PersonRepository;
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -28,6 +30,15 @@ public class GridView extends HorizontalLayout {
 		personsGrid.addColumn(Person::getFavoriteFood).setHeader("Favorite food");
 		
 		personsGrid.setItems(personsList);
+		
+		personsGrid.addSelectionListener(selection -> {
+            Optional<Person> optionalPerson = selection.getFirstSelectedItem();
+            if (optionalPerson.isPresent()) {
+            	String url = "/editPersonDetails/" + optionalPerson.get().getId();
+              UI.getCurrent().getPage().open(url);
+            }
+        });
+
 		
 		add(personsGrid);
 	}

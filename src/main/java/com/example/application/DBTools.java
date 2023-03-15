@@ -50,18 +50,18 @@ public class DBTools {
 	public Occupation createOccupation(String name) {
 		Occupation occupation = new Occupation();
 		occupation.setName(name);
-		return occupation;
+		return occupationRepository.save(occupation);
 	}
 
 	public Food createFood(String name) {
 		Food food = new Food();
 		food.setName(name);
-		return food;
+		return foodRepository.save(food);
 	}
 
 	public void create() {
 		log.info("======== CREATING DATABASE ======== ");
-		for (int i = 0; i < 2000; i++) {
+		for (int i = 1; i <= 2000; i++) {
 			String firstName = "Person" + i;
 			String lastName = "Surname" + i;
 			String email = firstName.concat(".").concat(lastName).concat("@email.com");
@@ -69,13 +69,13 @@ public class DBTools {
 			createPerson(firstName, lastName, email);
 		}
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 1; i <= 100; i++) {
 			String occupationName = "Occupation" + i;
 			log.info("======== creating Occupation ======== ");
 			createOccupation(occupationName);
 		}
 		
-		for (int i = 0; i < 100; i++) {
+		for (int i = 1; i <= 100; i++) {
 			String foodName = "Food" + i;
 			log.info("======== creating food ======== ");
 			createFood(foodName);
