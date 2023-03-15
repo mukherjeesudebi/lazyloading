@@ -1,16 +1,13 @@
 package com.example.application.dto;
 
-import com.example.application.entities.Food;
-import com.example.application.entities.Occupation;
-
 public class PersonDTO {
 
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
-    private Occupation occupation;
-    private Food favoriteFood;
+    private OccuptionDTO occupation;
+    private FoodDTO favoriteFood;
 
     public Long getId() {
         return id;
@@ -44,19 +41,20 @@ public class PersonDTO {
         this.email = email;
     }
 
-    public Occupation getOccupation() {
-        return occupation;
-    }
+	public OccuptionDTO getOccupation() {
+		return occupation;
+	}
 
-    public void setOccupation(Occupation occupation) {
-        this.occupation = occupation;
-    }
+	public void setOccupation(OccuptionDTO occupation) {
+		this.occupation = occupation;
+	}
 
-    public Food getFavoriteFood() {
-        return favoriteFood;
-    }
+	public FoodDTO getFavoriteFood() {
+		return favoriteFood;
+	}
 
-    public void setFavoriteFood(Food favoriteFood) {
-        this.favoriteFood = favoriteFood;
-    }
+	public void setFavoriteFood(FoodDTO favoriteFood) {
+		this.favoriteFood = favoriteFood;
+	}
+
 }

@@ -18,8 +18,6 @@ import java.util.Optional;
 @Component
 public class GridView extends HorizontalLayout {
 
-    private PersonService PersonService;
-
     public GridView(@Autowired PersonService personService) {
         Grid<PersonDTO> personsGrid = new Grid<>(PersonDTO.class, false);
         personsGrid.addColumn(PersonDTO::getFirstName).setHeader("First name");

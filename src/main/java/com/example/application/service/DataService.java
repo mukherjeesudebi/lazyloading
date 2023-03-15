@@ -34,5 +34,5 @@ public interface DataService<DTO, FILTER> {
 
 	Optional<DTO> findById(Long personId);
 
-	PersonDTO save(DTO dto);
+	DTO save(DTO dto);
 }
