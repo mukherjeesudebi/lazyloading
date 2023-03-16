@@ -30,9 +30,11 @@ public interface DataService<DTO, FILTER> {
 	 * @param query
 	 * @return list of found items
 	 */
-	List<DTO> listByFilter(Query<DTO, FILTER> query);
+	Stream<DTO> listByFilter(Query<DTO, FILTER> query);
 
 	Optional<DTO> findById(Long personId);
 
 	DTO save(DTO dto);
+	
+	Stream<DTO> listBySingleFilter(Query<DTO, String> query);
 }

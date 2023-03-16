@@ -34,20 +34,6 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 	}
 
 	@Override
-	public List<FoodDTO> listByFilter(Query<FoodDTO, FoodFilterDTO> query) {
-		if (hasNameFilter(query.getFilter())) {
-			return foodRepository
-					.findAllByName(query.getFilter().get().getName(),
-							Pageable.ofSize(query.getPageSize()).withPage(query.getPage()))
-					.stream().map(foodDTOConverter::convertToDTO).collect(Collectors.toList());
-		} else {
-			return foodRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream()
-					.map(foodDTOConverter::convertToDTO).collect(Collectors.toList());
-		}
-
-	}
-
-	@Override
 	public Optional<FoodDTO> findById(Long fooId) {
 		return foodRepository.findById(fooId).map(foodDTOConverter::convertToDTO);
 	}
@@ -59,8 +45,28 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 
 	}
 
-	private boolean hasNameFilter(Optional<FoodFilterDTO> filterDTO) {
-		return filterDTO.isPresent() && filterDTO.get().getName() != null && !filterDTO.get().getName().isEmpty();
+	@Override
+	public Stream<FoodDTO> listBySingleFilter(Query<FoodDTO, String> query) {
+		if (hasNameFilter(query.getFilter())) {
+			return foodRepository
+					.findAllByName(query.getFilter().get(),
+							Pageable.ofSize(query.getPageSize()).withPage(query.getPage()))
+					.stream().map(foodDTOConverter::convertToDTO);
+		} else {
+			return foodRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream()
+					.map(foodDTOConverter::convertToDTO);
+		}
+
+	}
+
+	@Override
+	public Stream<FoodDTO> listByFilter(Query<FoodDTO, FoodFilterDTO> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private boolean hasNameFilter(Optional<String> filter) {
+		return filter.isPresent() && filter.get() != null && !filter.get().isEmpty();
 	}
 
 	private Food findEntity(FoodDTO item) {
@@ -73,4 +79,5 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 		}
 		return existingEntity.get();
 	}
+
 }

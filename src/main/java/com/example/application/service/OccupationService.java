@@ -38,27 +38,32 @@ public class OccupationService implements DataService<OccuptionDTO, OccuptionFil
 	}
 
 	@Override
-	public List<OccuptionDTO> listByFilter(Query<OccuptionDTO, OccuptionFilterDTO> query) {
-		if (hasNameFilter(query.getFilter())) {
-			return occupationRepository
-					.findAllByName(query.getFilter().get().getName(),
-							Pageable.ofSize(query.getPageSize()).withPage(query.getPage()))
-					.stream().map(occupationDTOConverter::convertToDTO).collect(Collectors.toList());
-		} else {
-			return occupationRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream()
-					.map(occupationDTOConverter::convertToDTO).collect(Collectors.toList());
-		}
-
-	}
-
-	@Override
 	public OccuptionDTO save(OccuptionDTO dto) {
 		return occupationDTOConverter.convertToDTO(
 				occupationRepository.saveAndFlush(occupationDTOConverter.convertToEntity(this::findEntity, dto)));
 	}
 
-	private boolean hasNameFilter(Optional<OccuptionFilterDTO> filterDTO) {
-		return filterDTO.isPresent() && filterDTO.get().getName() != null && !filterDTO.get().getName().isEmpty();
+	@Override
+	public Stream<OccuptionDTO> listBySingleFilter(Query<OccuptionDTO, String> query) {
+		if (hasNameFilter(query.getFilter())) {
+			return occupationRepository
+					.findAllByName(query.getFilter().get(),
+							Pageable.ofSize(query.getPageSize()).withPage(query.getPage()))
+					.stream().map(occupationDTOConverter::convertToDTO);
+		} else {
+			return occupationRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream()
+					.map(occupationDTOConverter::convertToDTO);
+		}
+	}
+
+	@Override
+	public Stream<OccuptionDTO> listByFilter(Query<OccuptionDTO, OccuptionFilterDTO> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private boolean hasNameFilter(Optional<String> filter) {
+		return filter.isPresent() && filter.get() != null && !filter.get().isEmpty();
 	}
 
 	private Occupation findEntity(OccuptionDTO item) {

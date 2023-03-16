@@ -31,11 +31,11 @@ public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
     }
 
     @Override
-    public List<PersonDTO> listByFilter(Query<PersonDTO, PersonFilterDTO> query) {
+    public Stream<PersonDTO> listByFilter(Query<PersonDTO, PersonFilterDTO> query) {
         if (hasEmailFilter(query.getFilter())) {
-            return personRepository.findAllByEmail(query.getFilter().get().getEmail(), Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream().map(personDTOConverter::convertToDTO).collect(Collectors.toList());
+            return personRepository.findAllByEmail(query.getFilter().get().getEmail(), Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream().map(personDTOConverter::convertToDTO);
         } else {
-            return personRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream().map(personDTOConverter::convertToDTO).collect(Collectors.toList());
+            return personRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream().map(personDTOConverter::convertToDTO);
         }
     }
 
@@ -63,4 +63,10 @@ public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
         }
         return existingEntity.get();
     }
+
+	@Override
+	public Stream<PersonDTO> listBySingleFilter(Query<PersonDTO, String> query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

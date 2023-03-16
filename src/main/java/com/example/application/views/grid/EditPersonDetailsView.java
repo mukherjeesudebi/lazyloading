@@ -103,9 +103,8 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 	}
 
 	public void populateComboBoxData() {
-		//occupation.setItems(occupationService::list);
-		//occupation.setItems(occupationService::list);
-		//favoriteFood.setItems(foodService::list);
+		occupation.setItems(occupationService::listBySingleFilter);
+		favoriteFood.setItems(foodService::listBySingleFilter);
 	}
 
 	public Long getPersonId() {
