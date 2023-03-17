@@ -1,27 +1,44 @@
 package com.example.application.views.grid;
 
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.example.application.dto.FoodDTO;
 import com.example.application.dto.OccupationDTO;
 import com.example.application.dto.PersonDTO;
 import com.example.application.service.FoodService;
 import com.example.application.service.OccupationService;
 import com.example.application.service.PersonService;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.ResponsiveStep;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.*;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.Route;
 
 @Route("editPersonDetails")
 public class EditPersonDetailsView extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
 
+	private static final Logger log = LoggerFactory.getLogger(EditPersonDetailsView.class);
+	
 	private Long personId;
 	private TextField firstName;
 	private TextField lastName;
@@ -51,16 +68,30 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 		formLayout.setColspan(email, 2);
 
 		Button saveChangesButton = new Button("Save Changes");
-		add(formLayout, saveChangesButton);
+		saveChangesButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+		Button backButton = new Button("Back", new Icon(VaadinIcon.ARROW_BACKWARD));
+		backButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+		HorizontalLayout buttonLayout = new HorizontalLayout();
+		buttonLayout.add(backButton, saveChangesButton);
+
+		add(formLayout, buttonLayout);
 
 		saveChangesButton.addClickListener(event -> {
 			try {
 				binder.writeBean(selectedPerson);
-				personService.save(selectedPerson);
+				if(personService.save(selectedPerson)!=null) {
+					Notification notification = Notification.show("Saved Successfullt", 500, Position.MIDDLE);
+					notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+				};
 			} catch (ValidationException e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 
+		});
+
+		backButton.addClickListener(event -> {
+			 UI.getCurrent().navigate("/grid-view");
 		});
 
 		this.personService = personService;
