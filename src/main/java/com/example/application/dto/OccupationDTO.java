@@ -1,6 +1,6 @@
 package com.example.application.dto;
 
-public class OccuptionDTO {
+public class OccupationDTO {
 	private Long id;
 	private String name;
 

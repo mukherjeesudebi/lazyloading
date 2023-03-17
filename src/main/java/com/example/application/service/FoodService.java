@@ -1,10 +1,10 @@
 package com.example.application.service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +17,7 @@ import com.vaadin.flow.data.provider.Query;
 
 @Service
 public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
+	private static final Logger log = LoggerFactory.getLogger(PersonService.class);
 
 	@Autowired
 	private FoodRepository foodRepository;
@@ -26,8 +27,7 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 
 	@Override
 	public Stream<FoodDTO> list(Query<FoodDTO, Void> query) {
-		// TODO use logger
-		System.out.println("Fetching page: " + query.getPage() + " PageSize: " + query.getPageSize());
+		log.info("Fetching page: " + query.getPage() + " PageSize: " + query.getPageSize());
 		return foodRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream()
 				.map(foodDTOConverter::convertToDTO);
 
@@ -61,8 +61,7 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 
 	@Override
 	public Stream<FoodDTO> listByFilter(Query<FoodDTO, FoodFilterDTO> query) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Not implemented");
 	}
 
 	private boolean hasNameFilter(Optional<String> filter) {

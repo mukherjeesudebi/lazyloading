@@ -1,6 +1,6 @@
 package com.example.application.dto;
 
-public class OccuptionFilterDTO {
+public class OccupationFilterDTO {
 	private String name;
 
 	public String getName() {

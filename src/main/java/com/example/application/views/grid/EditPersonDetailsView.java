@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.application.dto.FoodDTO;
-import com.example.application.dto.OccuptionDTO;
+import com.example.application.dto.OccupationDTO;
 import com.example.application.dto.PersonDTO;
 import com.example.application.service.FoodService;
 import com.example.application.service.OccupationService;
@@ -33,7 +33,7 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 	private TextField firstName;
 	private TextField lastName;
 	private TextField email;
-	private ComboBox<OccuptionDTO> occupation;
+	private ComboBox<OccupationDTO> occupation;
 	private ComboBox<FoodDTO> favoriteFood;
 	private FormLayout formLayout;
 	private PersonDTO selectedPerson;

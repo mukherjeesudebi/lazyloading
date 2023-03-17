@@ -6,7 +6,7 @@ public class PersonDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private OccuptionDTO occupation;
+    private OccupationDTO occupation;
     private FoodDTO favoriteFood;
 
     public Long getId() {
@@ -41,11 +41,11 @@ public class PersonDTO {
         this.email = email;
     }
 
-	public OccuptionDTO getOccupation() {
+	public OccupationDTO getOccupation() {
 		return occupation;
 	}
 
-	public void setOccupation(OccuptionDTO occupation) {
+	public void setOccupation(OccupationDTO occupation) {
 		this.occupation = occupation;
 	}
 

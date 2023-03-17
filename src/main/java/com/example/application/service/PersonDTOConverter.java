@@ -1,5 +1,6 @@
 package com.example.application.service;
 
+import com.example.application.dto.OccupationDTO;
 import com.example.application.dto.PersonDTO;
 import com.example.application.entities.Person;
 import org.atmosphere.inject.annotation.ApplicationScoped;
@@ -19,9 +20,10 @@ public class PersonDTOConverter implements DTOConverter<Person, PersonDTO> {
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
-        // TODO use another DTO converter
-//        dto.setOccupation(entity.getOccupation());
-//        dto.setFavoriteFood(entity.getFavoriteFood());
+        
+        //TODO
+      //dto.setOccupation(entity.getOccupation());
+      // dto.setFavoriteFood(entity.getFavoriteFood());
 
         return dto;
     }
