@@ -47,7 +47,7 @@ public class OccupationService implements DataService<OccupationDTO, OccupationF
 	public Stream<OccupationDTO> listBySingleFilter(Query<OccupationDTO, String> query) {
 		if (hasNameFilter(query.getFilter())) {
 			return occupationRepository
-					.findAllByName(query.getFilter().get(),
+					.findAllByNameContainingIgnoreCase(query.getFilter().get(),
 							Pageable.ofSize(query.getPageSize()).withPage(query.getPage()))
 					.stream().map(occupationDTOConverter::convertToDTO);
 		} else {

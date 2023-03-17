@@ -10,4 +10,5 @@ import com.example.application.entities.Occupation;
 
 public interface FoodRepository extends JpaRepository<Food, Long>{
 	List<Food> findAllByName(String name, Pageable pageable);
+	List<Food> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
 }

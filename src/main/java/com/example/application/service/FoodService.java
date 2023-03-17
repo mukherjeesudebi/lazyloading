@@ -49,7 +49,7 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 	public Stream<FoodDTO> listBySingleFilter(Query<FoodDTO, String> query) {
 		if (hasNameFilter(query.getFilter())) {
 			return foodRepository
-					.findAllByName(query.getFilter().get(),
+					.findAllByNameContainingIgnoreCase(query.getFilter().get(),
 							Pageable.ofSize(query.getPageSize()).withPage(query.getPage()))
 					.stream().map(foodDTOConverter::convertToDTO);
 		} else {
