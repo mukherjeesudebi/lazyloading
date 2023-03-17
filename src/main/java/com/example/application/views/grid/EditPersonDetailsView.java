@@ -1,10 +1,5 @@
 package com.example.application.views.grid;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.example.application.dto.FoodDTO;
 import com.example.application.dto.OccupationDTO;
 import com.example.application.dto.PersonDTO;
@@ -19,11 +14,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.AfterNavigationEvent;
-import com.vaadin.flow.router.AfterNavigationObserver;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Optional;
 
 @Route("editPersonDetails")
 public class EditPersonDetailsView extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
@@ -38,16 +32,13 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 	private PersonDTO selectedPerson;
 	private Binder<PersonDTO> binder;
 
-	@Autowired
-	private PersonService personService;
-	
-	@Autowired
-	private OccupationService occupationService;
-	
-	@Autowired
-	private FoodService foodService;
+	private final PersonService personService;
+	private final OccupationService occupationService;
+	private final FoodService foodService;
 
-	public EditPersonDetailsView() {
+	public EditPersonDetailsView(@Autowired PersonService personService,
+								 @Autowired OccupationService occupationService,
+								 @Autowired FoodService foodService) {
 		firstName = new TextField("First name");
 		lastName = new TextField("Last name");
 		email = new TextField("Email id");
@@ -72,6 +63,9 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 
 		});
 
+		this.personService = personService;
+		this.occupationService = occupationService;
+		this.foodService = foodService;
 	}
 
 	@Override

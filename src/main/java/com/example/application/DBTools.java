@@ -1,32 +1,34 @@
 package com.example.application;
 
-import java.util.Random;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.example.application.entities.Food;
 import com.example.application.entities.Occupation;
 import com.example.application.entities.Person;
 import com.example.application.repositories.FoodRepository;
 import com.example.application.repositories.OccupationRepository;
 import com.example.application.repositories.PersonRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class DBTools {
 
 	private static final Logger log = LoggerFactory.getLogger(DBTools.class);
 
-	@Autowired
-	PersonRepository personRepository;
+	final PersonRepository personRepository;
 
-	@Autowired
-	OccupationRepository occupationRepository;
+	final OccupationRepository occupationRepository;
 
-	@Autowired
-	FoodRepository foodRepository;
+	final FoodRepository foodRepository;
+
+	public DBTools(@Autowired PersonRepository personRepository,
+				   @Autowired OccupationRepository occupationRepository,
+                   @Autowired FoodRepository foodRepository) {
+		this.personRepository = personRepository;
+		this.occupationRepository = occupationRepository;
+		this.foodRepository = foodRepository;
+	}
 
 	public void clear() {
 		log.info("Removing all persons... ");
@@ -61,7 +63,7 @@ public class DBTools {
 
 	public void create() {
 		log.info("======== CREATING DATABASE ======== ");
-		for (int i = 1; i <= 2000; i++) {
+		for (int i = 1; i <= 5000; i++) {
 			String firstName = "Person" + i;
 			String lastName = "Surname" + i;
 			String email = firstName.concat(".").concat(lastName).concat("@email.com");
@@ -69,13 +71,13 @@ public class DBTools {
 			createPerson(firstName, lastName, email);
 		}
 
-		for (int i = 1; i <= 200; i++) {
+		for (int i = 1; i <= 500; i++) {
 			String occupationName = "Occupation" + i;
 			log.info("======== creating Occupation ======== ");
 			createOccupation(occupationName);
 		}
-		
-		for (int i = 1; i <= 200; i++) {
+
+		for (int i = 1; i <= 500; i++) {
 			String foodName = "Food" + i;
 			log.info("======== creating food ======== ");
 			createFood(foodName);

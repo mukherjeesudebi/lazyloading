@@ -1,11 +1,9 @@
 package com.example.application.service;
 
-import org.atmosphere.inject.annotation.ApplicationScoped;
-
-import org.springframework.stereotype.Component;
-
 import com.example.application.dto.OccupationDTO;
 import com.example.application.entities.Occupation;
+import org.atmosphere.inject.annotation.ApplicationScoped;
+import org.springframework.stereotype.Component;
 
 
 @ApplicationScoped
@@ -21,7 +19,6 @@ public class OccupationDTOConverter implements DTOConverter<Occupation, Occupati
 		dto.setId(entity.getId());
 		dto.setName(entity.getName());
 		return dto;
-
 	}
 
 	@Override
@@ -33,7 +30,5 @@ public class OccupationDTOConverter implements DTOConverter<Occupation, Occupati
 		entity.setId(dto.getId());
 		entity.setName(dto.getName());
 		return entity;
-
 	}
-
 }

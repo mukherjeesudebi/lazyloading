@@ -1,33 +1,35 @@
 package com.example.application.service;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
+import com.example.application.dto.FoodDTO;
+import com.example.application.dto.FoodFilterDTO;
+import com.example.application.entities.Food;
+import com.example.application.repositories.FoodRepository;
+import com.vaadin.flow.data.provider.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.application.dto.FoodDTO;
-import com.example.application.dto.FoodFilterDTO;
-import com.example.application.entities.Food;
-import com.example.application.repositories.FoodRepository;
-import com.vaadin.flow.data.provider.Query;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 	private static final Logger log = LoggerFactory.getLogger(PersonService.class);
 
-	@Autowired
-	private FoodRepository foodRepository;
+	private final FoodRepository foodRepository;
 
-	@Autowired
-	private FoodDTOConverter foodDTOConverter;
+	private final FoodDTOConverter foodDTOConverter;
+
+	public FoodService(@Autowired FoodRepository foodRepository, @Autowired FoodDTOConverter foodDTOConverter) {
+		this.foodRepository = foodRepository;
+		this.foodDTOConverter = foodDTOConverter;
+	}
 
 	@Override
 	public Stream<FoodDTO> list(Query<FoodDTO, Void> query) {
-		log.info("Fetching page: " + query.getPage() + " PageSize: " + query.getPageSize());
+		log.info("Fetching page: {}, PageSize: {}", query.getPage(), query.getPageSize());
 		return foodRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream()
 				.map(foodDTOConverter::convertToDTO);
 
@@ -48,11 +50,13 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 	@Override
 	public Stream<FoodDTO> listBySingleFilter(Query<FoodDTO, String> query) {
 		if (hasNameFilter(query.getFilter())) {
+			log.info("Fetching page: {}, PageSize: {}, Filter: {}", query.getPage(), query.getPageSize(), query.getFilter());
 			return foodRepository
 					.findAllByNameContainingIgnoreCase(query.getFilter().get(),
 							Pageable.ofSize(query.getPageSize()).withPage(query.getPage()))
 					.stream().map(foodDTOConverter::convertToDTO);
 		} else {
+			log.info("Fetching page: {}, PageSize: {}", query.getPage(), query.getPageSize());
 			return foodRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream()
 					.map(foodDTOConverter::convertToDTO);
 		}
@@ -65,7 +69,7 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 	}
 
 	private boolean hasNameFilter(Optional<String> filter) {
-		return filter.isPresent() && filter.get() != null && !filter.get().isEmpty();
+		return filter.filter(s -> !s.isEmpty()).isPresent();
 	}
 
 	private Food findEntity(FoodDTO item) {
@@ -73,10 +77,9 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 			return new Food();
 		}
 		Optional<Food> existingEntity = foodRepository.findById(item.getId());
-		if (!existingEntity.isPresent()) {
+		if (existingEntity.isEmpty()) {
 			throw new RuntimeException("Attempt to modify an entity that does not exist");
 		}
 		return existingEntity.get();
 	}
-
 }

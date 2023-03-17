@@ -1,35 +1,35 @@
 package com.example.application.service;
 
-import java.util.Optional;
-import java.util.Random;
-import java.util.stream.Stream;
-
+import com.example.application.dto.PersonDTO;
+import com.example.application.dto.PersonFilterDTO;
+import com.example.application.entities.Person;
+import com.example.application.repositories.PersonRepository;
+import com.vaadin.flow.data.provider.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.application.dto.PersonDTO;
-import com.example.application.dto.PersonFilterDTO;
-import com.example.application.entities.Person;
-import com.example.application.repositories.PersonRepository;
-import com.vaadin.flow.data.provider.Query;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
 	
 	private static final Logger log = LoggerFactory.getLogger(PersonService.class);
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
+    private final PersonDTOConverter personDTOConverter;
 
-    @Autowired
-    private PersonDTOConverter personDTOConverter;
+    public PersonService(@Autowired PersonRepository personRepository, @Autowired PersonDTOConverter personDTOConverter) {
+        this.personRepository = personRepository;
+        this.personDTOConverter = personDTOConverter;
+    }
 
     @Override
     public Stream<PersonDTO> list(Query<PersonDTO, Void> query) {
-    	log.info("Fetching page: "+query.getPage()+" PageSize: "+query.getPageSize());
+        log.info("Fetching page: {}, PageSize: {}", query.getPage(), query.getPageSize());
         return personRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream().map(personDTOConverter::convertToDTO);
     }
 
@@ -65,7 +65,7 @@ public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
             return new Person();
         }
         Optional<Person> existingEntity = personRepository.findById(item.getId());
-        if (!existingEntity.isPresent()) {
+        if (existingEntity.isEmpty()) {
             throw new RuntimeException("Attempt to modify an entity that does not exist");
         }
         return existingEntity.get();
