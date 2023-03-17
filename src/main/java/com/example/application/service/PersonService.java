@@ -49,10 +49,6 @@ public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
 
     @Override
     public PersonDTO save(PersonDTO dto) {
-    	Random random = new Random();
-    	if(random.nextInt(5)<4) {
-    		throw new RuntimeException("test Exception");
-    	}
         return personDTOConverter.convertToDTO(personRepository.saveAndFlush(personDTOConverter.convertToEntity(this::findEntity, dto)));
     }
 

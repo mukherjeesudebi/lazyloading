@@ -26,7 +26,6 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 
 @Route("editPersonDetails")
-@Component
 public class EditPersonDetailsView extends VerticalLayout implements HasUrlParameter<String>, AfterNavigationObserver {
 
 	private Long personId;
@@ -48,7 +47,6 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 	@Autowired
 	private FoodService foodService;
 
-	// TODO use service for other occupations and foods
 	public EditPersonDetailsView() {
 		firstName = new TextField("First name");
 		lastName = new TextField("Last name");

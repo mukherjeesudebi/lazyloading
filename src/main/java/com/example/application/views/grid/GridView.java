@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @PageTitle("Grid")
 @Route(value = "grid-view", layout = MainLayout.class)
-@Component
 public class GridView extends HorizontalLayout {
 
     public GridView(@Autowired PersonService personService) {

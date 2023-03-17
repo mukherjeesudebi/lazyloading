@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.server.ErrorEvent;
 import com.vaadin.flow.server.ErrorHandler;
 
@@ -17,7 +19,8 @@ public class CustomErrorHandler implements ErrorHandler {
 		logger.error("Something wrong happened", event.getThrowable());
 		if (UI.getCurrent() != null) {
 			UI.getCurrent().access(() -> {
-				Notification.show("An internal error has occurred." + "Contact support for assistance.");
+				Notification notification = Notification.show("An internal error has occurred.", 500, Position.MIDDLE);
+		        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
 			});
 		}
 
