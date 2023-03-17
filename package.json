@@ -401,8 +401,8 @@
     "lit": "$lit",
     "@polymer/polymer": "$@polymer/polymer",
     "proj4": "$proj4",
-    "@vaadin-component-factory/vcf-nav": "$@vaadin-component-factory/vcf-nav",
     "date-fns": "$date-fns",
-    "line-awesome": "$line-awesome"
+    "line-awesome": "$line-awesome",
+    "@vaadin-component-factory/vcf-nav": "$@vaadin-component-factory/vcf-nav"
   }
 }
