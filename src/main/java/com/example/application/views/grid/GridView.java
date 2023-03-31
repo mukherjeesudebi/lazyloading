@@ -9,6 +9,7 @@ import com.example.application.dto.PersonDTO;
 import com.example.application.dto.PersonFilterDTO;
 import com.example.application.service.PersonService;
 import com.example.application.util.GridHeader;
+import com.example.application.util.GridSorterProperty;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -39,11 +40,16 @@ public class GridView extends HorizontalLayout {
 		dataProvider = new PersonDataProvider(personService);
 		filterDataProvider = dataProvider.withConfigurableFilter();
 
-		Grid.Column<PersonDTO> firstNameColumn = personsGrid.addColumn(PersonDTO::getFirstName);
-		Grid.Column<PersonDTO> lastNameColumn = personsGrid.addColumn(PersonDTO::getLastName);
-		Grid.Column<PersonDTO> emailColumn = personsGrid.addColumn(PersonDTO::getEmail);
-		Grid.Column<PersonDTO> occupationColumn = personsGrid.addColumn(PersonDTO::getOccupation);
-		Grid.Column<PersonDTO> favoriteFoodColumn = personsGrid.addColumn(PersonDTO::getFavoriteFood);
+		Grid.Column<PersonDTO> firstNameColumn = personsGrid.addColumn(PersonDTO::getFirstName)
+				.setSortProperty(GridSorterProperty.FIRSTNAME.label);
+		Grid.Column<PersonDTO> lastNameColumn = personsGrid.addColumn(PersonDTO::getLastName)
+				.setSortProperty(GridSorterProperty.LASTNAME.label);
+		Grid.Column<PersonDTO> emailColumn = personsGrid.addColumn(PersonDTO::getEmail)
+				.setSortProperty(GridSorterProperty.EMAIL.label);
+		Grid.Column<PersonDTO> occupationColumn = personsGrid.addColumn(PersonDTO::getOccupation)
+				.setSortProperty(GridSorterProperty.OCCUPATION.label);
+		Grid.Column<PersonDTO> favoriteFoodColumn = personsGrid.addColumn(PersonDTO::getFavoriteFood)
+				.setSortProperty(GridSorterProperty.FAVORITEFOOD.label);
 
 		personsGrid.setItems(filterDataProvider);
 
