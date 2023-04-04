@@ -2,12 +2,16 @@ package com.example.application.service;
 
 import com.example.application.dto.FoodDTO;
 import com.example.application.dto.FoodFilterDTO;
+import com.example.application.dto.PersonDTO;
+import com.example.application.dto.PersonFilterDTO;
 import com.example.application.entities.Food;
 import com.example.application.repositories.FoodRepository;
+import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.data.provider.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -81,5 +85,11 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 			throw new RuntimeException("Attempt to modify an entity that does not exist");
 		}
 		return existingEntity.get();
+	}
+
+	@Override
+	public Stream<PersonDTO> findAllByFilter(PersonFilterDTO personFilter, PageRequest pageRequest,
+			GridSortOrder<PersonDTO> sortOrder) {
+		throw new UnsupportedOperationException("Not implemented");
 	}
 }

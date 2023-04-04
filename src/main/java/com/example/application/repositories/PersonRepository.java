@@ -7,7 +7,7 @@ import com.example.application.entities.Person;
 
 import java.util.List;
 
-public interface PersonRepository extends JpaRepository<Person, Long>{
+public interface PersonRepository extends JpaRepository<Person, Long>, PersonRepositoryCustom{
 
     List<Person> findAllByEmail(String email, Pageable pageable);
 

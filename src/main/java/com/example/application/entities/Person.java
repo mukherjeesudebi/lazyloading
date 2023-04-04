@@ -1,13 +1,23 @@
 package com.example.application.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
 public class Person extends AbstractEntity {
+	@Column(name = "firstname")
 	private String firstName;
+	
+	@Column(name = "lastname")
 	private String lastName;
+	
+	@Column(name = "email")
 	private String email;
+	
+	@Column(name = "occupation")
 	private Occupation occupation;
+	
+	@Column(name = "favoritefood")
 	private Food favoriteFood;
 
 	public String getFirstName() {

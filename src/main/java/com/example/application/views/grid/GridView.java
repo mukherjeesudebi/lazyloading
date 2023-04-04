@@ -1,26 +1,27 @@
 package com.example.application.views.grid;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
-import com.example.application.dataproviders.PersonDataProvider;
 import com.example.application.dto.PersonDTO;
 import com.example.application.dto.PersonFilterDTO;
 import com.example.application.service.PersonService;
 import com.example.application.util.GridHeader;
-import com.example.application.util.GridSorterProperty;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
-import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
+import com.vaadin.flow.data.event.SortEvent;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -29,29 +30,28 @@ import com.vaadin.flow.router.Route;
 @Route(value = "grid-view", layout = MainLayout.class)
 public class GridView extends HorizontalLayout {
 
+	private Grid<PersonDTO> personsGrid;
 	private PersonFilterDTO personFilter;
-	private PersonDataProvider dataProvider;
-	private ConfigurableFilterDataProvider<PersonDTO, Void, PersonFilterDTO> filterDataProvider;
+	private PersonService personService;
 
 	public GridView(@Autowired PersonService personService) {
-		Grid<PersonDTO> personsGrid = new Grid<>(PersonDTO.class, false);
+		personsGrid = new Grid<>(PersonDTO.class, false);
+		this.personService = personService;
 
 		personFilter = new PersonFilterDTO();
-		dataProvider = new PersonDataProvider(personService);
-		filterDataProvider = dataProvider.withConfigurableFilter();
 
-		Grid.Column<PersonDTO> firstNameColumn = personsGrid.addColumn(PersonDTO::getFirstName)
-				.setSortProperty(GridSorterProperty.FIRSTNAME.label);
-		Grid.Column<PersonDTO> lastNameColumn = personsGrid.addColumn(PersonDTO::getLastName)
-				.setSortProperty(GridSorterProperty.LASTNAME.label);
-		Grid.Column<PersonDTO> emailColumn = personsGrid.addColumn(PersonDTO::getEmail)
-				.setSortProperty(GridSorterProperty.EMAIL.label);
-		Grid.Column<PersonDTO> occupationColumn = personsGrid.addColumn(PersonDTO::getOccupation)
-				.setSortProperty(GridSorterProperty.OCCUPATION.label);
-		Grid.Column<PersonDTO> favoriteFoodColumn = personsGrid.addColumn(PersonDTO::getFavoriteFood)
-				.setSortProperty(GridSorterProperty.FAVORITEFOOD.label);
+		Grid.Column<PersonDTO> firstNameColumn = personsGrid.addColumn(PersonDTO::getFirstName).setSortable(true)
+				.setKey("firstname");
+		Grid.Column<PersonDTO> lastNameColumn = personsGrid.addColumn(PersonDTO::getLastName).setSortable(true)
+				.setKey("lastname");
+		Grid.Column<PersonDTO> emailColumn = personsGrid.addColumn(PersonDTO::getEmail).setSortable(true)
+				.setKey("email");
+		Grid.Column<PersonDTO> occupationColumn = personsGrid.addColumn(PersonDTO::getOccupation).setSortable(true)
+				.setKey("occupation");
+		Grid.Column<PersonDTO> favoriteFoodColumn = personsGrid.addColumn(PersonDTO::getFavoriteFood).setSortable(true)
+				.setKey("favoritefood");
 
-		personsGrid.setItems(filterDataProvider);
+		personsGrid.setItems(this.personService::list);
 
 		personsGrid.getHeaderRows().clear();
 		HeaderRow headerRow = personsGrid.appendHeaderRow();
@@ -69,6 +69,7 @@ public class GridView extends HorizontalLayout {
 				UI.getCurrent().navigate(url);
 			}
 		});
+		personsGrid.addSortListener(e -> callSortQuery(e));
 		add(personsGrid);
 	}
 
@@ -104,7 +105,18 @@ public class GridView extends HorizontalLayout {
 			personFilter.setFavoriteFood(value);
 		}
 
-		filterDataProvider.setFilter(personFilter);
+		personsGrid.setItems(query -> this.personService.findAllByFilter(personFilter,
+				PageRequest.of(query.getPage(), query.getPageSize()), null));
 
+	}
+
+	private void callSortQuery(SortEvent<Grid<PersonDTO>, GridSortOrder<PersonDTO>> sortEvent) {
+		if(sortEvent.getSortOrder().size()>0) {
+		personsGrid.setItems(query -> this.personService.findAllByFilter(personFilter,
+				PageRequest.of(query.getPage(), query.getPageSize()), sortEvent.getSortOrder().get(0)));
+		}else {
+		personsGrid.setItems(query -> this.personService.findAllByFilter(personFilter,
+					PageRequest.of(query.getPage(), query.getPageSize()), null));
+		}
 	}
 }

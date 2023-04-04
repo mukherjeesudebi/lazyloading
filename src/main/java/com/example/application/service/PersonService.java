@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import com.example.application.dto.PersonDTO;
 import com.example.application.dto.PersonFilterDTO;
 import com.example.application.entities.Person;
 import com.example.application.repositories.PersonRepository;
+import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.data.provider.Query;
 
 @Service
@@ -48,6 +50,11 @@ public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
     @Override
     public Stream<PersonDTO> listByFilter(Query<PersonDTO, PersonFilterDTO> query) {
     	return personRepository.findAll().stream().map(personDTOConverter::convertToDTO);
+    }
+    
+    @Override
+    public Stream<PersonDTO> findAllByFilter(PersonFilterDTO personFilter, PageRequest pageRequest, GridSortOrder<PersonDTO> sortOrder) {
+    	return personRepository.findAllByFilter(personFilter,pageRequest,sortOrder).stream().map(personDTOConverter::convertToDTO);
     }
 
     @Override
