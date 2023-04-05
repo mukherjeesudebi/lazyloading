@@ -32,6 +32,7 @@ public class PersonDTOConverter implements DTOConverter<Person, PersonDTO> {
         }
         PersonDTO dto = new PersonDTO();
         dto.setId(entity.getId());
+        dto.setConsistencyVersion(entity.getConsistencyVersion());
         dto.setFirstName(entity.getFirstName());
         dto.setLastName(entity.getLastName());
         dto.setEmail(entity.getEmail());
@@ -52,6 +53,7 @@ public class PersonDTOConverter implements DTOConverter<Person, PersonDTO> {
         }
         Person entity = entityProvider.apply(dto);
         entity.setId(dto.getId());
+        entity.setConsistencyVersion(dto.getConsistencyVersion());
         entity.setFirstName(dto.getFirstName());
         entity.setLastName(dto.getLastName());
         entity.setEmail(dto.getEmail());

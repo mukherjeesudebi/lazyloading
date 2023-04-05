@@ -3,6 +3,7 @@ package com.example.application.dto;
 public class PersonDTO {
 
     private Long id;
+    private int consistencyVersion;
     private String firstName;
     private String lastName;
     private String email;
@@ -55,6 +56,14 @@ public class PersonDTO {
 
 	public void setFavoriteFood(FoodDTO favoriteFood) {
 		this.favoriteFood = favoriteFood;
+	}
+
+	public int getConsistencyVersion() {
+		return consistencyVersion;
+	}
+
+	public void setConsistencyVersion(int consistencyVersion) {
+		this.consistencyVersion = consistencyVersion;
 	}
 
 }

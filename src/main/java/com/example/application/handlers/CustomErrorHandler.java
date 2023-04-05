@@ -2,9 +2,11 @@ package com.example.application.handlers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.server.ErrorEvent;
 import com.vaadin.flow.server.ErrorHandler;
 
@@ -19,9 +21,18 @@ public class CustomErrorHandler implements ErrorHandler {
 			UI.getCurrent().access(() -> {
 				ConfirmDialog confirmDialog = new ConfirmDialog();
 				confirmDialog.setHeader("Runtime Exception");
-				confirmDialog.setText("An internal error has occurred.");
-				confirmDialog.setWidth("400px");
-				confirmDialog.setHeight("200px");
+				
+				Div errorMsgDiv = new Div();
+				errorMsgDiv.getStyle().set("color", "red");
+
+				if (event.getThrowable() instanceof ObjectOptimisticLockingFailureException) {
+					errorMsgDiv.setText(
+							"Person was edited by someone else right before you. Please take a note of your changes, refresh page, and try again");
+				} else {
+					errorMsgDiv.setText("An internal error has occurred.");
+				}
+
+				confirmDialog.add(errorMsgDiv);
 				confirmDialog.open();
 				confirmDialog.setConfirmText("ok");
 			});
