@@ -28,14 +28,6 @@ public interface DataService<DTO, FILTER> {
 	 */
 	Stream<DTO> list(Query<DTO, Void> query);
 
-	/**
-	 * Provides data for the given query
-	 *
-	 * @param query
-	 * @return list of found items
-	 */
-	Stream<DTO> listByFilter(Query<DTO, FILTER> query);
-
 	Optional<DTO> findById(Long personId);
 
 	DTO save(DTO dto);

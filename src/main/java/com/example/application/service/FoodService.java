@@ -67,11 +67,6 @@ public class FoodService implements DataService<FoodDTO, FoodFilterDTO> {
 
 	}
 
-	@Override
-	public Stream<FoodDTO> listByFilter(Query<FoodDTO, FoodFilterDTO> query) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
 	private boolean hasNameFilter(Optional<String> filter) {
 		return filter.filter(s -> !s.isEmpty()).isPresent();
 	}

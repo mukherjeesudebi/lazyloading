@@ -64,11 +64,6 @@ public class OccupationService implements DataService<OccupationDTO, OccupationF
 		}
 	}
 
-	@Override
-	public Stream<OccupationDTO> listByFilter(Query<OccupationDTO, OccupationFilterDTO> query) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
 	private boolean hasNameFilter(Optional<String> filter) {
 		return filter.filter(s -> !s.isEmpty()).isPresent();
 	}

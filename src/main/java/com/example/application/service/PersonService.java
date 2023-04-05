@@ -1,9 +1,11 @@
 package com.example.application.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
+import com.example.application.dto.PersonDTO;
+import com.example.application.dto.PersonFilterDTO;
+import com.example.application.entities.Person;
+import com.example.application.repositories.PersonRepository;
+import com.vaadin.flow.component.grid.GridSortOrder;
+import com.vaadin.flow.data.provider.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.application.dto.PersonDTO;
-import com.example.application.dto.PersonFilterDTO;
-import com.example.application.entities.Person;
-import com.example.application.repositories.PersonRepository;
-import com.vaadin.flow.component.grid.GridSortOrder;
-import com.vaadin.flow.data.provider.Query;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
@@ -36,21 +34,6 @@ public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
         log.info("Fetching page: {}, PageSize: {}", query.getPage(), query.getPageSize());
         return personRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream().map(personDTOConverter::convertToDTO);
     }
-
-	/*
-	 * @Override public Stream<PersonDTO> listByFilter(Query<PersonDTO,
-	 * PersonFilterDTO> query) { if (hasEmailFilter(query.getFilter())) { return
-	 * personRepository.findAllByEmail(query.getFilter().get().getEmail(),
-	 * Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream().map(
-	 * personDTOConverter::convertToDTO); } else { return
-	 * personRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.
-	 * getPage())).stream().map(personDTOConverter::convertToDTO); } }
-	 */
-    
-    @Override
-    public Stream<PersonDTO> listByFilter(Query<PersonDTO, PersonFilterDTO> query) {
-    	return personRepository.findAll().stream().map(personDTOConverter::convertToDTO);
-    }
     
     @Override
     public Stream<PersonDTO> findAllByFilter(PersonFilterDTO personFilter, PageRequest pageRequest, GridSortOrder<PersonDTO> sortOrder) {
@@ -66,12 +49,6 @@ public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
     public PersonDTO save(PersonDTO dto) {
         return personDTOConverter.convertToDTO(personRepository.saveAndFlush(personDTOConverter.convertToEntity(this::findEntity, dto)));
     }
-
-	/*
-	 * private boolean hasEmailFilter(Optional<PersonFilterDTO> filterDTO) { return
-	 * filterDTO.isPresent() && filterDTO.get().getEmail() != null &&
-	 * !filterDTO.get().getEmail().isEmpty(); }
-	 */
 
     private Person findEntity(PersonDTO item) {
         if (item.getId() == null) {
