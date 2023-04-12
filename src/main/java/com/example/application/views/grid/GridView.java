@@ -41,15 +41,15 @@ public class GridView extends HorizontalLayout {
 		personFilter = new PersonFilterDTO();
 
 		Grid.Column<PersonDTO> firstNameColumn = personsGrid.addColumn(PersonDTO::getFirstName).setSortable(true)
-				.setKey("firstname");
+				.setKey("firstName");
 		Grid.Column<PersonDTO> lastNameColumn = personsGrid.addColumn(PersonDTO::getLastName).setSortable(true)
-				.setKey("lastname");
+				.setKey("lastName");
 		Grid.Column<PersonDTO> emailColumn = personsGrid.addColumn(PersonDTO::getEmail).setSortable(true)
 				.setKey("email");
 		Grid.Column<PersonDTO> occupationColumn = personsGrid.addColumn(PersonDTO::getOccupation).setSortable(true)
 				.setKey("occupation");
 		Grid.Column<PersonDTO> favoriteFoodColumn = personsGrid.addColumn(PersonDTO::getFavoriteFood).setSortable(true)
-				.setKey("favoritefood");
+				.setKey("favoriteFood");
 
 		personsGrid.setItems(this.personService::list);
 

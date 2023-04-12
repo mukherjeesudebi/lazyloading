@@ -15,9 +15,11 @@ public class Person extends AbstractEntity {
 	private String email;
 	
 	@Column(name = "occupation")
+	//@OneToOne -- needed when using CriteriaBuilder for filtering and sorting
 	private Occupation occupation;
 	
 	@Column(name = "favoritefood")
+	//@OneToOne -- needed when using CriteriaBuilder for filtering and sorting
 	private Food favoriteFood;
 
 	public String getFirstName() {
