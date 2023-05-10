@@ -8,7 +8,8 @@ import com.example.application.dto.PersonDTO;
 import com.example.application.dto.PersonFilterDTO;
 import com.example.application.entities.Person;
 import com.vaadin.flow.component.grid.GridSortOrder;
+import com.vaadin.flow.data.provider.SortDirection;
 
 public interface PersonRepositoryCustom {
-	List<Person> findAllByFilter(PersonFilterDTO personFilter,Pageable pageable,GridSortOrder<PersonDTO> sortOrder);
+	List<Person> findAllByFilter(Pageable pageable,PersonFilterDTO personFilter,String sortKey,SortDirection direction);
 }
