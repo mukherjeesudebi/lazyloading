@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.swing.SortOrder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
@@ -21,8 +18,6 @@ import org.springframework.web.client.RestTemplate;
 import com.example.application.dto.PersonDTO;
 import com.example.application.dto.PersonFilterDTO;
 import com.example.application.dto.PersonRestClientDTO;
-import com.example.application.entities.Person;
-import com.example.application.repositories.PersonRepository;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.SortDirection;
@@ -37,15 +32,6 @@ public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
 	private String domainName;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
-
-	private final PersonRepository personRepository;
-	private final PersonDTOConverter personDTOConverter;
-
-	public PersonService(@Autowired PersonRepository personRepository,
-			@Autowired PersonDTOConverter personDTOConverter) {
-		this.personRepository = personRepository;
-		this.personDTOConverter = personDTOConverter;
-	}
 
 	@Override
 	public Stream<PersonDTO> list(Query<PersonDTO, Void> query) {

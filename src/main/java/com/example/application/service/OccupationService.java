@@ -1,82 +1,108 @@
 package com.example.application.service;
 
-import com.example.application.dto.OccupationDTO;
-import com.example.application.dto.OccupationFilterDTO;
-import com.example.application.dto.PersonDTO;
-import com.example.application.dto.PersonFilterDTO;
-import com.example.application.entities.Occupation;
-import com.example.application.repositories.OccupationRepository;
-import com.vaadin.flow.component.grid.GridSortOrder;
-import com.vaadin.flow.data.provider.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.example.application.dto.OccupationDTO;
+import com.example.application.dto.OccupationFilterDTO;
+import com.example.application.dto.PageableRestClientDTO;
+import com.example.application.dto.PersonDTO;
+import com.example.application.dto.PersonFilterDTO;
+import com.vaadin.flow.component.grid.GridSortOrder;
+import com.vaadin.flow.data.provider.Query;
+
 @Service
 public class OccupationService implements DataService<OccupationDTO, OccupationFilterDTO> {
-	private static final Logger log = LoggerFactory.getLogger(PersonService.class);
-	
-	private final OccupationRepository occupationRepository;
 
-	private final OccupationDTOConverter occupationDTOConverter;
+	@Value("${server.port}")
+	private String serverPort;
 
-	public OccupationService(@Autowired OccupationRepository occupationRepository, @Autowired OccupationDTOConverter occupationDTOConverter) {
-		this.occupationRepository = occupationRepository;
-		this.occupationDTOConverter = occupationDTOConverter;
-	}
+	@Value("${vaadin.domainName}")
+	private String domainName;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
 
 	@Override
 	public Stream<OccupationDTO> list(Query<OccupationDTO, Void> query) {
-		log.info("Fetching page: {}, PageSize: {}", query.getPage(), query.getPageSize());
-		return occupationRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream()
-				.map(occupationDTOConverter::convertToDTO);
+		LOGGER.info("Fetching page: {}, PageSize: {}", query.getPage(), query.getPageSize());
+		final String url = String.format(domainName + serverPort + "/occupationList");
+
+		PageableRestClientDTO pageableRestClientDTO = new PageableRestClientDTO(
+				PageRequest.of(query.getPage(), query.getPageSize()));
+
+		RestTemplate restTemplate = new RestTemplate();
+		HttpEntity<PageableRestClientDTO> request = new HttpEntity<>(pageableRestClientDTO);
+		ResponseEntity<List<OccupationDTO>> responseEntity = restTemplate.exchange(url, HttpMethod.POST, request,
+				new ParameterizedTypeReference<List<OccupationDTO>>() {
+				});
+		return responseEntity.getBody().stream();
 	}
 
 	@Override
 	public Optional<OccupationDTO> findById(Long occupationId) {
-		return occupationRepository.findById(occupationId).map(occupationDTOConverter::convertToDTO);
+		RestTemplate restTemplate = new RestTemplate();
+		HttpEntity<Long> request = new HttpEntity<>(occupationId);
+		final String url = String.format(domainName + serverPort + "/findOccupationById");
+		ResponseEntity<Optional<OccupationDTO>> responseEntity = restTemplate.exchange(url, HttpMethod.POST, request,
+				new ParameterizedTypeReference<Optional<OccupationDTO>>() {
+				});
+		return responseEntity.getBody();
 	}
 
 	@Override
 	public OccupationDTO save(OccupationDTO dto) {
-		return occupationDTOConverter.convertToDTO(
-				occupationRepository.saveAndFlush(occupationDTOConverter.convertToEntity(this::findEntity, dto)));
+		RestTemplate restTemplate = new RestTemplate();
+		HttpEntity<OccupationDTO> request = new HttpEntity<>(dto);
+		final String url = String.format(domainName + serverPort + "/saveOccupation");
+		ResponseEntity<OccupationDTO> responseEntity = restTemplate.exchange(url, HttpMethod.POST, request,
+				new ParameterizedTypeReference<OccupationDTO>() {
+				});
+		return responseEntity.getBody();
 	}
 
 	@Override
 	public Stream<OccupationDTO> listBySingleFilter(Query<OccupationDTO, String> query) {
 		if (hasNameFilter(query.getFilter())) {
-			log.info("Fetching page: {}, PageSize: {}, Filter: {}", query.getPage(), query.getPageSize(), query.getFilter());
-			return occupationRepository
-					.findAllByNameContainingIgnoreCase(query.getFilter().get(),
-							Pageable.ofSize(query.getPageSize()).withPage(query.getPage()))
-					.stream().map(occupationDTOConverter::convertToDTO);
+			LOGGER.info("Fetching page: {}, PageSize: {}, Filter: {}", query.getPage(), query.getPageSize(),
+					query.getFilter());
+			final String url = String.format(domainName + serverPort + "/findAllByOccNameContainingIgnoreCase");
+
+			PageableRestClientDTO pageableRestClientDTO = new PageableRestClientDTO(
+					PageRequest.of(query.getPage(), query.getPageSize()), query.getFilter().get());
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity<PageableRestClientDTO> request = new HttpEntity<>(pageableRestClientDTO);
+			ResponseEntity<List<OccupationDTO>> responseEntity = restTemplate.exchange(url, HttpMethod.POST, request,
+					new ParameterizedTypeReference<List<OccupationDTO>>() {
+					});
+			return responseEntity.getBody().stream();
 		} else {
-			log.info("Fetching page: {}, PageSize: {}", query.getPage(), query.getPageSize());
-			return occupationRepository.findAll(Pageable.ofSize(query.getPageSize()).withPage(query.getPage())).stream()
-					.map(occupationDTOConverter::convertToDTO);
+			LOGGER.info("Fetching page: {}, PageSize: {}", query.getPage(), query.getPageSize());
+			final String url = String.format(domainName + serverPort + "/occupationList");
+			PageableRestClientDTO pageableRestClientDTO = new PageableRestClientDTO(
+					PageRequest.of(query.getPage(), query.getPageSize()));
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity<PageableRestClientDTO> request = new HttpEntity<>(pageableRestClientDTO);
+			ResponseEntity<List<OccupationDTO>> responseEntity = restTemplate.exchange(url, HttpMethod.POST, request,
+					new ParameterizedTypeReference<List<OccupationDTO>>() {
+					});
+			return responseEntity.getBody().stream();
 		}
 	}
 
 	private boolean hasNameFilter(Optional<String> filter) {
 		return filter.filter(s -> !s.isEmpty()).isPresent();
-	}
-
-	private Occupation findEntity(OccupationDTO item) {
-		if (item.getId() == null) {
-			return new Occupation();
-		}
-		Optional<Occupation> existingEntity = occupationRepository.findById(item.getId());
-		if (existingEntity.isEmpty()) {
-			throw new RuntimeException("Attempt to modify an entity that does not exist");
-		}
-		return existingEntity.get();
 	}
 
 	@Override
