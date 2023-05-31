@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class PersonController {
 
 	@PostMapping("/list")
 	public List<PersonDTO> list(@RequestBody PersonRestClientDTO data) {
-		return personRepository.findAll(data.toPageable()).stream().map(personDTOConverter::convertToDTO).toList();
+		return personRepository.findAll(Pageable.ofSize(data.getPageSize()).withPage(data.getPageNumber())).stream().map(personDTOConverter::convertToDTO).toList();
 	}
 
 	@PostMapping(value = "/findAllByFilter", consumes = { "application/json" })

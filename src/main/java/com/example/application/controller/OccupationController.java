@@ -35,7 +35,7 @@ public class OccupationController {
 
 	@PostMapping("/occupationList")
 	public List<OccupationDTO> list(@RequestBody PageableRestClientDTO data) {
-		return occupationRepository.findAll(data.toPageable()).stream().map(occupationDTOConverter::convertToDTO)
+		return occupationRepository.findAll(Pageable.ofSize(data.getPageSize()).withPage(data.getPageNumber())).stream().map(occupationDTOConverter::convertToDTO)
 				.toList();
 	}
 
