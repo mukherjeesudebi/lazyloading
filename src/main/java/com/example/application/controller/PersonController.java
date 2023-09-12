@@ -2,14 +2,19 @@ package com.example.application.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.example.application.dto.PersonDTO;
 import com.example.application.dto.PersonRestClientDTO;
@@ -29,6 +34,12 @@ public class PersonController {
 			@Autowired PersonDTOConverter personDTOConverter) {
 		this.personRepository = personRepository;
 		this.personDTOConverter = personDTOConverter;
+	}
+	
+	@PostMapping("/listall")
+	public List<PersonDTO> listAll(){
+		return personRepository.findAll().stream().map(personDTOConverter::convertToDTO).toList();
+
 	}
 
 	@PostMapping("/list")

@@ -1,5 +1,7 @@
 package com.example.application.entities;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -61,5 +63,29 @@ public class Person extends AbstractEntity {
 	public void setFavoriteFood(Food favoriteFood) {
 		this.favoriteFood = favoriteFood;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(email, favoriteFood, firstName, lastName, occupation);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Person other = (Person) obj;
+		return Objects.equals(email, other.email) && Objects.equals(favoriteFood, other.favoriteFood)
+				&& Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName)
+				&& Objects.equals(occupation, other.occupation);
+	}
+	
+	
 
 }

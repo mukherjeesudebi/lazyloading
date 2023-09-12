@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.example.application.broadcast.Broadcaster;
 import com.example.application.dto.FoodDTO;
 import com.example.application.dto.OccupationDTO;
 import com.example.application.dto.PersonDTO;
@@ -84,6 +85,7 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 					Notification notification = Notification.show("Saved Successfullt", 500, Position.MIDDLE);
 					notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 				};
+				Broadcaster.broadcast(selectedPerson);
 			} catch (ValidationException e) {
 				log.error(e.getMessage());
 			}
@@ -126,7 +128,9 @@ public class EditPersonDetailsView extends VerticalLayout implements HasUrlParam
 	}
 
 	public void populateComboBoxData() {
-		occupation.setItems(occupationService::listBySingleFilter);
+		//occupation.setItems(occupationService::listBySingleFilter);
+		occupation.setItems(occupationService.listAll());
+		occupation.setPageSize(3000);
 		favoriteFood.setItems(foodService::listBySingleFilter);
 	}
 

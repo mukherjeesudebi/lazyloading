@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.application.dto.OccupationDTO;
 import com.example.application.dto.PageableRestClientDTO;
+import com.example.application.dto.PersonDTO;
 import com.example.application.entities.Occupation;
 import com.example.application.repositories.OccupationRepository;
 import com.example.application.service.OccupationDTOConverter;
@@ -31,6 +32,12 @@ public class OccupationController {
 			@Autowired OccupationDTOConverter occupationDTOConverter) {
 		this.occupationRepository = occupationRepository;
 		this.occupationDTOConverter = occupationDTOConverter;
+	}
+	
+	@PostMapping("/listallOccupation")
+	public List<OccupationDTO> listAll(){
+		return occupationRepository.findAll().stream().map(occupationDTOConverter::convertToDTO).toList();
+
 	}
 
 	@PostMapping("/occupationList")

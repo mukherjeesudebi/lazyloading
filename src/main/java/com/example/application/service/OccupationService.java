@@ -26,13 +26,24 @@ import com.vaadin.flow.data.provider.Query;
 @Service
 public class OccupationService implements DataService<OccupationDTO, OccupationFilterDTO> {
 
-	@Value("${server.port}")
-	private String serverPort;
+	//@Value("${server.port}")
+	private String serverPort = "8080";
 
-	@Value("${vaadin.domainName}")
-	private String domainName;
+	//@Value("${vaadin.domainName}")
+	private String domainName = "http://localhost:";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
+	
+	public List<OccupationDTO> listAll(){
+		final String url = String.format(domainName + serverPort + "/listallOccupation");
+
+
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<OccupationDTO>> responseEntity = restTemplate.exchange(url, HttpMethod.POST, null,
+				new ParameterizedTypeReference<List<OccupationDTO>>() {
+				});
+		return responseEntity.getBody();
+	}
 
 	@Override
 	public Stream<OccupationDTO> list(Query<OccupationDTO, Void> query) {

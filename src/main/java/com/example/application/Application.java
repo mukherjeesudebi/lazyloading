@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.component.page.Push;
+import com.vaadin.flow.shared.ui.Transport;
 import com.vaadin.flow.theme.Theme;
 
 /**
@@ -28,6 +30,7 @@ import com.vaadin.flow.theme.Theme;
 @EntityScan("com.example.application.entities")
 @EnableJpaRepositories(basePackages = "com.example.application.repositories")
 @EnableTransactionManagement
+@Push(transport = Transport.LONG_POLLING)
 public class Application extends SpringBootServletInitializer implements AppShellConfigurator {
 
 	@Autowired

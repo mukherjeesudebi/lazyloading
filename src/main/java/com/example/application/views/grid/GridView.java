@@ -1,18 +1,22 @@
 package com.example.application.views.grid;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 
+import com.example.application.broadcast.Broadcaster;
 import com.example.application.dto.PersonDTO;
 import com.example.application.dto.PersonFilterDTO;
 import com.example.application.service.PersonService;
 import com.example.application.util.GridHeader;
 import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.checkbox.CheckboxGroup;
+import com.vaadin.flow.component.checkbox.CheckboxGroupVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -25,6 +29,7 @@ import com.vaadin.flow.data.event.SortEvent;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.shared.Registration;
 
 @PageTitle("Grid")
 @Route(value = "grid-view", layout = MainLayout.class)
@@ -33,11 +38,11 @@ public class GridView extends HorizontalLayout {
 	private Grid<PersonDTO> personsGrid;
 	private PersonFilterDTO personFilter;
 	private PersonService personService;
+	public Registration broadcasterRegistration;
 
 	public GridView(@Autowired PersonService personService) {
 		personsGrid = new Grid<>(PersonDTO.class, false);
 		this.personService = personService;
-
 		personFilter = new PersonFilterDTO();
 
 		Grid.Column<PersonDTO> firstNameColumn = personsGrid.addColumn(PersonDTO::getFirstName).setSortable(true)
@@ -51,8 +56,9 @@ public class GridView extends HorizontalLayout {
 		Grid.Column<PersonDTO> favoriteFoodColumn = personsGrid.addColumn(PersonDTO::getFavoriteFood).setSortable(true)
 				.setKey("favoriteFood");
 
-		personsGrid.setItems(this.personService::list);
-
+		//personsGrid.setItems(this.personService::list);
+		personsGrid.setItems(this.personService.listAll());
+		
 		personsGrid.getHeaderRows().clear();
 		HeaderRow headerRow = personsGrid.appendHeaderRow();
 
@@ -70,7 +76,7 @@ public class GridView extends HorizontalLayout {
 			}
 		});
 		personsGrid.addSortListener(e -> callSortQuery(e));
-		add(personsGrid);
+		add(personsGrid);		
 	}
 
 	private Component createFilterHeader(String labelText) {
@@ -111,12 +117,30 @@ public class GridView extends HorizontalLayout {
 	}
 
 	private void callSortQuery(SortEvent<Grid<PersonDTO>, GridSortOrder<PersonDTO>> sortEvent) {
-		if(sortEvent.getSortOrder().size()>0) {
-		personsGrid.setItems(query -> this.personService.findAllByFilter(personFilter,
-				PageRequest.of(query.getPage(), query.getPageSize()), sortEvent.getSortOrder().get(0)));
-		}else {
-		personsGrid.setItems(query -> this.personService.findAllByFilter(personFilter,
+		if (sortEvent.getSortOrder().size() > 0) {
+			personsGrid.setItems(query -> this.personService.findAllByFilter(personFilter,
+					PageRequest.of(query.getPage(), query.getPageSize()), sortEvent.getSortOrder().get(0)));
+		} else {
+			personsGrid.setItems(query -> this.personService.findAllByFilter(personFilter,
 					PageRequest.of(query.getPage(), query.getPageSize()), null));
 		}
+	}
+
+	@Override
+	protected void onAttach(AttachEvent attachEvent) {
+		UI ui = attachEvent.getUI();
+		broadcasterRegistration = Broadcaster.register(newMessage -> {
+			ui.access(() -> {
+				personsGrid.setItems(query -> this.personService.findAllByFilter(personFilter,
+						PageRequest.of(query.getPage(), query.getPageSize()), null));
+				personsGrid.getDataProvider().refreshAll();
+			});
+		});
+	}
+
+	@Override
+	protected void onDetach(DetachEvent detachEvent) {
+		broadcasterRegistration.remove();
+		broadcasterRegistration = null;
 	}
 }

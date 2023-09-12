@@ -1,5 +1,7 @@
 package com.example.application.dto;
 
+import java.util.Objects;
+
 public class PersonDTO {
 
     private Long id;
@@ -66,4 +68,25 @@ public class PersonDTO {
 		this.consistencyVersion = consistencyVersion;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(consistencyVersion, email, favoriteFood, firstName, id, lastName, occupation);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PersonDTO other = (PersonDTO) obj;
+		return consistencyVersion == other.consistencyVersion && Objects.equals(email, other.email)
+				&& Objects.equals(favoriteFood, other.favoriteFood) && Objects.equals(firstName, other.firstName)
+				&& Objects.equals(id, other.id) && Objects.equals(lastName, other.lastName)
+				&& Objects.equals(occupation, other.occupation);
+	}
+
+	
 }

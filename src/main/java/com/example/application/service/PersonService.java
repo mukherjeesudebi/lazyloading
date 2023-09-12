@@ -25,13 +25,24 @@ import com.vaadin.flow.data.provider.SortDirection;
 @Service
 public class PersonService implements DataService<PersonDTO, PersonFilterDTO> {
 
-	@Value("${server.port}")
-	private String serverPort;
+	//@Value("${server.port}")
+	private String serverPort = "8080";
 
-	@Value("${vaadin.domainName}")
-	private String domainName;
+	//@Value("${vaadin.domainName}")
+	private String domainName = "http://localhost:";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersonService.class);
+	
+	public List<PersonDTO> listAll(){
+		final String url = String.format(domainName + serverPort + "/listall");
+
+
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<PersonDTO>> responseEntity = restTemplate.exchange(url, HttpMethod.POST, null,
+				new ParameterizedTypeReference<List<PersonDTO>>() {
+				});
+		return responseEntity.getBody();
+	}
 
 	@Override
 	public Stream<PersonDTO> list(Query<PersonDTO, Void> query) {
